@@ -1,6 +1,6 @@
 
 include "/home/y.okura/zkp/circomlib/circuits/eddsaposeidon.circom";
-include "circomlib/poseidon.circom";
+include "/home/y.okura/zkp/circomlib/circuits/poseidon.circom";
 include "/home/y.okura/zkp/circomlib/circuits/bitify.circom";
 include "/home/y.okura/zkp/circomlib/circuits/B2N.circom";
 
