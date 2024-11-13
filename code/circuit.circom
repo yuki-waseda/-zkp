@@ -64,8 +64,9 @@ template Main (num, d) {
   comment <== 111111111111;
   signal output result;
   result <== sum;
-
-
+  signal output test;
+  var x = 1/100;
+  test <== x;
 }
 
 
