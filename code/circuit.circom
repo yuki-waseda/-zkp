@@ -60,6 +60,8 @@ template Main (num, d) {
       }
       sum += r[i].out;
   }
+  signal output comment;
+  comment <== 111111111111;
   signal output result;
   result <== sum;
 
