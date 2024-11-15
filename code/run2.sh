@@ -19,7 +19,7 @@ snarkjs powersoftau verify pot14_final.ptau && \
 ##9
 ##Create the circuit
 ##10
-circom --r1cs --wasm --c --sym --inspect /home/y.okura/zkp/code/circuit.circom && \
+circom --r1cs --wasm --c --sym --inspect /home/y.okura/zkp/code/circuit2.circom && \
 ##11
 snarkjs r1cs info circuit.r1cs && \
 ##12
