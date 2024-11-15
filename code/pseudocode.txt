@@ -1,0 +1,121 @@
+
+include "/home/y.okura/zkp/circomlib/circuits/eddsaposeidon.circom";
+include "/home/y.okura/zkp/circomlib/circuits/poseidon.circom";
+include "/home/y.okura/zkp/circomlib/circuits/bitify.circom";
+include "/home/y.okura/zkp/circomlib/circuits/B2N.circom";
+
+// W_delta[out_dim][in_dim]のノルムを計算、S_clipと比較 (assertで認証) 
+// チャレンジへの署名を検証
+// 正規乱数生成 out_dim*in_dim 個 
+    // 繰り返し一様乱数生成 num個, dビット
+    // 総和を取る
+// 正規乱数を sigma * S_clipでスケーリング
+// W_deltaに正規乱数を加算
+
+入力について
+// W_delta 浮動小数点5桁 (10000倍)
+// S_clip 浮動小数点5桁とする (10000倍)
+// σ 浮動小数点5桁とする (10000倍)
+// 一様乱数のスケーリング 2^(d-1)*0.5=256 (1/256する)
+// 結果
+// w + S * σ * Σ( 一様乱数 /256)
+(// 10000 + 10000*10000 *(1/256) )
+// w * (10000)^2 * 256 + 10000*10000 * Σ (一様乱数)
+// 結果を(10000)^2 * 256分の1する
+
+main(out_dim, in_dim, sigma, S_clip){
+    signal input challenge; //チャレンジの値
+    signal input R8[2];
+    signal input S;
+    signal input pk[2];
+    var bit_length = 8;
+    var num_splits = 16;
+    signal input W_delta[out_dim][in_dim];
+
+    // W_deltaのノルムW_normを計算
+    // S_clipと比較
+    // 署名検証 pk,S,R8,challenge
+    // noize[out_dim][in_dim]を宣言
+    以下をout_dim*in_dimだけ繰り返す
+        // 一様乱数列randSeq生成 (254ビット)
+        // 一様乱数列を分割 split_random_seq 8ビット bit_length 16個　num_splits
+        // 正規乱数noizeを生成
+        // noizeの要素とする
+    // noize_scaled = noize[out_dim][in_dim]* S * σ 
+    // W_noised = W_delta + noize_scaled
+    // W_noised を出力
+}
+
+
+
+
+
+template Main () {
+
+ num; //一様乱数の数
+ var d ; //一様乱数のビット数
+ signal input challenge; //チャレンジの値
+ signal input R8[2];
+ signal input S;
+ signal input pk[2];
+
+
+
+
+ component eddsaVerifier = EdDSAPoseidonVerifier();
+ eddsaVerifier.Ax <== pk[0];
+ eddsaVerifier.Ay <== pk[1];
+ eddsaVerifier.S <== S;
+ eddsaVerifier.R8x <== R8[0];
+ eddsaVerifier.R8y <== R8[1];
+ eddsaVerifier.M <== challenge;
+ eddsaVerifier.enabled <== 1;
+
+
+ component hash = Poseidon(3);
+ component bitify = Num2Bits_strict();
+ hash.inputs[0] <== R8[0];
+ hash.inputs[1] <== R8[1];
+ hash.inputs[2] <== S;
+ bitify.in <== hash.out;
+ signal randSeq[254];
+ for(var i =0; i < 254; i++){
+     randSeq[i] <== bitify.out[i];
+ }
+  signal rn[num][d];
+   var ng = 0;
+  for(var i = 0; i < num;i++){
+       ng += randSeq[i * d];
+      for(var j = 0; j < d; j++){
+          rn[i][j]<== randSeq[i * d + j];
+      }
+  }
+
+
+  component r[num];
+       for (var i = 0; i < num; i++) {
+   r[i] =signedBits2Num(d);
+       }
+
+
+  var sum = 0;
+  for(var i = 0; i < num; i++){
+      for(var j = 0; j < d; j++){
+          r[i].in[j] <== rn[i][j];
+      }
+      sum += r[i].out;
+  }
+  
+  
+
+  signal output comment;
+  comment <== 111111111111;
+  signal output result;
+  result <== sum;
+  signal output test;
+  var x = 1/100;
+  test <== x;
+}
+
+
+component main { public [ challenge,pk, w, S] } = Main(16,8);
