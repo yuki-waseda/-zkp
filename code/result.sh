@@ -1,4 +1,3 @@
-reate the circuit
 ##10
 circom --r1cs --wasm --c --sym --inspect /home/y.okura/zkp/code/circuit.circom && \
 ##11
