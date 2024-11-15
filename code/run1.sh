@@ -1,5 +1,5 @@
 ##1
-snarkjs powersoftau new bn128 15 pot14_0000.ptau -v && \
+snarkjs powersoftau new bn128 18 pot14_0000.ptau -v && \
 ##2
 snarkjs powersoftau contribute pot14_0000.ptau pot14_0001.ptau --name="First && \contribution" -v -e="some random text"
 ##3
