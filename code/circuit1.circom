@@ -96,6 +96,6 @@ template Main (out_dim, in_dim, S_clip, sigma) {
 
 
 
-component main {public [ challenge,pk ] } = Main(4,7,80000,10000);
+component main {public [ challenge,pk ] } = Main(4,7,800000,10000);
 
 
