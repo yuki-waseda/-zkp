@@ -29,7 +29,7 @@ snarkjs r1cs export json circuit.r1cs circuit.r1cs.json && \
 cat circuit.r1cs.json && \
 ##14
 ##Calculate the witness
-snarkjs wtns calculate circuit_js/circuit.wasm  /home/y.okura/zkp/code/input.json witness.wtns && \
+snarkjs wtns calculate circuit_js/circuit.wasm  /home/y.okura/zkp/code/input2.json witness.wtns && \
 snarkjs wtns check circuit.r1cs witness.wtns && \
 ##15
 snarkjs groth16 setup circuit.r1cs pot14_final.ptau circuit_0000.zkey && \
@@ -52,7 +52,7 @@ snarkjs zkey export verificationkey circuit_final.zkey verification_key.json && 
 ##23
 snarkjs groth16 prove circuit_final.zkey witness.wtns proof.json public.json && \
 ##23a
-snarkjs groth16 fullprove  /home/y.okura/zkp/code/input.json circuit_js/circuit.wasm circuit_final.zkey proof.json public.json && \
+snarkjs groth16 fullprove  /home/y.okura/zkp/code/input2.json circuit_js/circuit.wasm circuit_final.zkey proof.json public.json && \
 ##24
 snarkjs groth16 verify verification_key.json public.json proof.json && \
 ##25
