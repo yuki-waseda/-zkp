@@ -1,8 +1,8 @@
 
 pragma circom 2.1.6;
-include "circomlib/poseidon.circom";
-include "circomlib/bitify.circom";
-include "circomlib/eddsaposeidon.circom";
+include "/home/y.okura/zkp/circomlib/circuits/poseidon.circom";
+include "/home/y.okura/zkp/circomlib/circuits/bitify.circom";
+include "/home/y.okura/zkp/circomlib/circuits/eddsaposeidon.circom";
 
 
 // include "https://github.com/0xPARC/circom-secp256k1/blob/master/circuits/bigint.circom";
