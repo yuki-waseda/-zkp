@@ -3,7 +3,7 @@ pragma circom 2.1.6;
 include "/home/y.okura/zkp/circomlib/circuits/poseidon.circom";
 include "/home/y.okura/zkp/circomlib/circuits/bitify.circom";
 include "/home/y.okura/zkp/circomlib/circuits/eddsaposeidon.circom";
-
+include "/home/y.okura/zkp/circomlib/circuits/absolute.circom";
 
 // include "https://github.com/0xPARC/circom-secp256k1/blob/master/circuits/bigint.circom";
 
@@ -16,11 +16,14 @@ template Main (out_dim, in_dim, S_clip, sigma) {
   signal input pk[2];
 
   var W_norm = 0;
+  component abs[out_dim][in_dim];
   for(var i = 0; i < out_dim; i++){
       for(var j = 0; j < in_dim; j++){
-          W_norm += W_delta[i][j];
+          abs[i][j] = absolute();
+          abs[i][j].in <== W_delta[i][j];
+          W_norm += abs[i][j].out;
       }
-  }
+   }
   assert(W_norm < S_clip);
 
 
@@ -94,8 +97,4 @@ template Main (out_dim, in_dim, S_clip, sigma) {
 }
 
 
-
-
-component main {public [ challenge,pk ] } = Main(2,3,80000,10000);
-
-
+component main {public [ challenge,pk ] } = Main(2,3,8000000,10000);
