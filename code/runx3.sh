@@ -29,7 +29,7 @@ snarkjs zkey verify circuit3.r1cs /mnt/mp_nas_mks/yuki_data/powersOfTau28_hez_fi
 ##20
 snarkjs zkey beacon circuit3_0003.zkey circuit3_final.zkey 0102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f 10 -n="Final Beacon phase2" && \
 ##21
-snarkjs zkey verify circuit3.r1cs pot14_final.ptau circuit3_final.zkey && \
+snarkjs zkey verify circuit3.r1cs /mnt/mp_nas_mks/yuki_data/powersOfTau28_hez_final_15.ptau circuit3_final.zkey && \
 ##22
 snarkjs zkey export verificationkey circuit3_final.zkey verification_key.json && \
 ##23
