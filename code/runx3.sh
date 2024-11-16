@@ -12,10 +12,10 @@ snarkjs r1cs export json circuit3.r1cs circuit3.r1cs.json && \
 cat circuit3.r1cs.json && \
 ##14
 ##Calculate the witness
-snarkjs wtns calculate circuit3_js/circuit2.wasm  /home/y.okura/zkp/code/input1.json witness.wtns && \
+snarkjs wtns calculate circuit3_js/circuit3.wasm  /home/y.okura/zkp/code/input1.json witness.wtns && \
 snarkjs wtns check circuit3.r1cs witness.wtns && \
 ##15
-snarkjs groth16 setup circuit3.r1cs /mnt/mp_nas_mks/yuki_data/powersOfTau28_hez_final_15.ptau circuit3_0000.zkey && \
+snarkjs groth16 setup c ircuit3.r1cs /mnt/mp_nas_mks/yuki_data/powersOfTau28_hez_final_15.ptau circuit3_0000.zkey && \
 ##16
 snarkjs zkey contribute circuit3_0000.zkey circuit3_0001.zkey --name="1st Contributor Name" -v  -e="some random text" && \
 ##17
@@ -35,7 +35,7 @@ snarkjs zkey export verificationkey circuit3_final.zkey verification_key.json &&
 ##23
 snarkjs groth16 prove circuit3_final.zkey witness.wtns proof.json public.json && \
 ##23a
-snarkjs groth16 fullprove  /home/y.okura/zkp/code/input1.json circuit3_js/circuit2.wasm circuit3_final.zkey proof.json public.json && \
+snarkjs groth16 fullprove  /home/y.okura/zkp/code/input1.json circuit3_js/circuit3.wasm circuit3_final.zkey proof.json public.json && \
 ##24
 snarkjs groth16 verify verification_key.json public.json proof.json && \
 ##25
