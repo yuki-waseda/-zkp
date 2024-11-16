@@ -15,7 +15,7 @@ cat circuit3.r1cs.json && \
 snarkjs wtns calculate circuit3_js/circuit3.wasm  /home/y.okura/zkp/code/input1.json witness.wtns && \
 snarkjs wtns check circuit3.r1cs witness.wtns && \
 ##15
-snarkjs groth16 setup c ircuit3.r1cs /mnt/mp_nas_mks/yuki_data/powersOfTau28_hez_final_15.ptau circuit3_0000.zkey && \
+snarkjs groth16 setup circuit3.r1cs /mnt/mp_nas_mks/yuki_data/powersOfTau28_hez_final_15.ptau circuit3_0000.zkey && \
 ##16
 snarkjs zkey contribute circuit3_0000.zkey circuit3_0001.zkey --name="1st Contributor Name" -v  -e="some random text" && \
 ##17
