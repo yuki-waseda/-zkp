@@ -60,3 +60,4 @@ snarkjs groth16 fullprove  /home/y.okura/zkp/code/input1.json circuit3_js/circui
 snarkjs groth16 verify verification_key.json public.json proof.json && \
 ##25
 cat public.json
+　
