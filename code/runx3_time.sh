@@ -10,7 +10,7 @@ measure_time() {
 }
 
 # 各コマンドの実行回数
-repeats=5
+repeats=30
 
 # コマンド23a: fullprove
 cmd23a="snarkjs groth16 fullprove /home/y.okura/zkp/code/input1.json circuit3_js/circuit3.wasm circuit1_final.zkey proof.json public.json"
