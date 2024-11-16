@@ -12,9 +12,6 @@ template Main (num, d) {
  signal input S;
  signal input pk[2];
 
-
-
-
  component eddsaVerifier = EdDSAPoseidonVerifier();
  eddsaVerifier.Ax <== pk[0];
  eddsaVerifier.Ay <== pk[1];
