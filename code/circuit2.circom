@@ -3,7 +3,7 @@ pragma circom 2.1.6;
 include "/home/y.okura/zkp/circomlib/circuits/poseidon.circom";
 include "/home/y.okura/zkp/circomlib/circuits/bitify.circom";
 include "/home/y.okura/zkp/circomlib/circuits/eddsaposeidon.circom";
-include "/home/y.okura/zkp/circomlib/circuits/absolute.circom";
+include "/home/y.okura/zkp/circomlib/circuits/absoluter.circom";
 
 // include "https://github.com/0xPARC/circom-secp256k1/blob/master/circuits/bigint.circom";
 
@@ -19,7 +19,7 @@ template Main (out_dim, in_dim, S_clip, sigma) {
   component abs[out_dim][in_dim];
   for(var i = 0; i < out_dim; i++){
       for(var j = 0; j < in_dim; j++){
-          abs[i][j] = absolute();
+          abs[i][j] = Num2abs();
           abs[i][j].in <== W_delta[i][j];
           W_norm += abs[i][j].out;
       }
