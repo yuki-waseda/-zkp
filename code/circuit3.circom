@@ -98,4 +98,4 @@ template Main (out_dim, in_dim, S_clip, sigma, num_tosses) {
 }
 
 
-component main {public [ challenge,pk ] } = Main(2,3,8000000,10000,64);
+component main {public [ challenge,pk ] } = Main(4,7,8000000,10000,64);
