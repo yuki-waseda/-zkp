@@ -1,17 +1,23 @@
 
-//eps = 4
-
+//eps = 8
     // 必要な乱数列の数 = 28
-    // 必要な乱数列の長さ 128
-    // 28 * 128 = 3584 ビット
+    // 必要な乱数列の長さ = 64
+    // 28 * 64 = 1792ビット
     // ハッシュ列の長さ 254 //256とする
-    // ハッシュへのアクセス回数 14回
+    // ハッシュへのアクセス回数 7回
 
 pragma circom 2.1.6;
 include "/home/y.okura/zkp/circomlib/circuits/eddsaposeidon.circom";
 include "/home/y.okura/zkp/circomlib/circuits/poseidon.circom";
 include "/home/y.okura/zkp/circomlib/circuits/bitify.circom";
 include "/home/y.okura/zkp/circomlib/circuits/absoluter.circom";
+
+    // 乱数列の数 = 28
+    // 必要な乱数列の長さ 64
+    // 28 * 64 = 1792ビット
+    // ハッシュ列の長さ 254 //256とする
+    // ハッシュへのアクセス回数 7回
+    
 
 template Main (out_dim, in_dim, S_clip, sigma, num_tosses) {
     signal input W_delta[out_dim][in_dim];
@@ -29,10 +35,10 @@ template Main (out_dim, in_dim, S_clip, sigma, num_tosses) {
         eddsaVerifier.M <== challenge;
         eddsaVerifier.enabled <== 1;
   
-    component hash[14];
-    component bitify[14];
+    component hash[7];
+    component bitify[7];
 
-    for(var i = 0; i<14;i++){
+    for(var i = 0; i<7;i++){
         hash[i]=Poseidon(4);
         hash[i].inputs[0] <== R8[0];
         hash[i].inputs[1] <== R8[1];
@@ -42,8 +48,8 @@ template Main (out_dim, in_dim, S_clip, sigma, num_tosses) {
         bitify[i].in <== hash[i].out;
     }
          
-    var randSeq[256 * 14];
-    for(var i =0; i < 14; i++){
+    var randSeq[256 * 7];
+    for(var i =0; i < 7; i++){
        for(var j = 0; j < 254; j++){
            randSeq[256*i + j]= bitify[i].out[j];
         }
@@ -54,15 +60,15 @@ template Main (out_dim, in_dim, S_clip, sigma, num_tosses) {
 
     for(var i =0; i < out_dim; i++){
         for(var j = 0; j < in_dim; j++){
-            for(var k = 0; k < 128; k++){
-                binom_val[i][j] += randSeq[k + 128 * (out_dim * i + j)];
+            for(var k = 0; k < 64; k++){
+                binom_val[i][j] += randSeq[k + 64 * (out_dim * i + j)];
             }
         }
     }
 
    var noize[out_dim][in_dim];
-   var binom_mean =  64;
-   var binom_deviation = 56568; 
+   var binom_mean =  32;
+   var binom_deviation = 4; 
    for(var i =0; i < out_dim; i++){
        for(var j = 0; j < in_dim; j++){
            noize[i][j] = binom_val[i][j] - binom_mean;
@@ -92,5 +98,4 @@ template Main (out_dim, in_dim, S_clip, sigma, num_tosses) {
 }
 
 
-component main {public [ challenge,pk ] } = Main(4,7,8000000,10000,128);
-
+component main {public [ challenge,pk ] } = Main(2,3,8000000,10000,64);
