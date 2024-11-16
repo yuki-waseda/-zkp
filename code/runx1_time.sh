@@ -3,10 +3,10 @@
 # 実行時間の計測用関数
 measure_time() {
     local start_time=$(date +%s%3N) # ミリ秒単位の開始時間
-    output=$($1 2>&1)               # コマンドの実行結果（標準エラーも含む）を変数に格納
-    local end_time=$(date +%s%3N)   # ミリ秒単位の終了時間
+    $1 > /dev/null 2>&1            # コマンド実行（出力は無視）
+    local end_time=$(date +%s%3N)  # ミリ秒単位の終了時間
     local elapsed_time=$((end_time - start_time))
-    echo "$elapsed_time"            # 実行時間を返す
+    echo "$elapsed_time"           # 実行時間を返す
 }
 
 # 各コマンドの実行回数
@@ -33,11 +33,7 @@ done
 # コマンド24の実行
 echo "Running command 24 ($repeats times)..."
 for i in $(seq 1 $repeats); do
-    output=$($cmd24 2>&1)                 # コマンドの出力を変数に格納
-    time_24=$(echo "$output" | grep -oP '\d+ ms$' | grep -oP '\d+') # 実行時間を抽出
-    if [ -z "$time_24" ]; then
-        time_24=0                         # 実行時間が見つからない場合は0に設定
-    fi
+    time_24=$(measure_time "$cmd24")
     echo "Run $i (24): $time_24 ms"
     total_time_24=$((total_time_24 + time_24))
 done
