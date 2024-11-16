@@ -3,16 +3,17 @@
 # 実行時間の計測用関数
 measure_time() {
     local start_time=$(date +%s%3N) # ミリ秒単位の開始時間
-    $1                              # コマンドの実行
-    local end_time=$(date +%s%3N)   # ミリ秒単位の終了時間
-    echo $((end_time - start_time)) # 実行時間を返す
+    $1 > /dev/null 2>&1            # コマンド実行（出力は無視）
+    local end_time=$(date +%s%3N)  # ミリ秒単位の終了時間
+    local elapsed_time=$((end_time - start_time))
+    echo "$elapsed_time"           # 実行時間を返す
 }
 
 # 各コマンドの実行回数
 repeats=5
 
 # コマンド23a: fullprove
-cmd23a="snarkjs groth16 fullprove /home/y.okura/zkp/code/input3.json circuit3_js/circuit3.wasm circuit1_final.zkey proof.json public.json"
+cmd23a="snarkjs groth16 fullprove /home/y.okura/zkp/code/input1.json circuit3_js/circuit3.wasm circuit1_final.zkey proof.json public.json"
 
 # コマンド24: verify
 cmd24="snarkjs groth16 verify verification_key.json public.json proof.json"
