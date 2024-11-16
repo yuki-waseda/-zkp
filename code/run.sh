@@ -2,7 +2,7 @@
 ## 24172
 
 ## Phase 1 セットアップ
-snarkjs powersoftau new bn128 17 pot14_0000.ptau -v && \
+snarkjs powersoftau new bn128 15 pot14_0000.ptau -v && \
 
 ## 100人の参加者がランダム性を追加
 for i in $(seq 1 100); do
