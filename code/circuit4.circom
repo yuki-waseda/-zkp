@@ -32,7 +32,7 @@ template Main (out_dim, in_dim, S_clip, sigma) {
         eddsaVerifier.M <== challenge;
         eddsaVerifier.enabled <== 1;
   
-    var num_iterations = 2;
+    var num_iterations = 8;
     component hash[out_dim][in_dim][num_iterations];
     component bitify[out_dim][in_dim][num_iterations];
 
