@@ -1,6 +1,4 @@
-## number of constraints
-## 32950
-##Create the circuit
+##16ptauを使います
 ##10
 circom --r1cs --wasm --c --sym --inspect /home/y.okura/zkp/code/circuit2.circom && \
 ##11

@@ -1,7 +1,5 @@
-## number of constraints
-## 32950
-##Create the circuit
-##10
+#17ptauを使います
+
 circom --r1cs --wasm --c --sym --inspect /home/y.okura/zkp/code/circuit1.circom && \
 ##11
 snarkjs r1cs info circuit1.r1cs && \
