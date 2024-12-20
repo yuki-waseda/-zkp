@@ -1,8 +1,8 @@
-./runx05.sh&& \
-./runx05_time.sh&& \
-./runx1.sh&& \
-./runx1_time.sh&& \
-./runx2.sh&& \
-./runx2_time.sh&& \
-./runx4.sh&& \
-./runx4_time.sh
+/home/y.okura/zkp/code/runx05.sh&& \
+/home/y.okura/zkp/code/runx05_time.sh&& \
+/home/y.okura/zkp/code/runx1.sh&& \
+/home/y.okura/zkp/code/runx1_time.sh&& \
+/home/y.okura/zkp/code/runx2.sh&& \
+/home/y.okura/zkp/code/runx2_time.sh&& \
+/home/y.okura/zkp/code/runx4.sh&& \
+/home/y.okura/zkp/code/runx4_time.sh
