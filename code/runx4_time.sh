@@ -12,6 +12,9 @@ measure_time() {
 # 各コマンドの実行回数
 repeats=30
 
+# 出力ファイル
+output_file="execution4_times.log"
+
 # コマンド23a: fullprove
 cmd23a="snarkjs groth16 fullprove /home/y.okura/zkp/code/input1.json circuit4_js/circuit4.wasm circuit4_final.zkey proof.json public.json"
 
@@ -22,19 +25,23 @@ cmd24="snarkjs groth16 verify verification_key.json public.json proof.json"
 total_time_23a=0
 total_time_24=0
 
+# 出力ファイルの初期化
+echo "Execution times log" > $output_file
+echo "--------------------" >> $output_file
+
 # コマンド23aの実行
-echo "Running command 23a ($repeats times)..."
+echo "Running command 23a ($repeats times)..." | tee -a $output_file
 for i in $(seq 1 $repeats); do
     time_23a=$(measure_time "$cmd23a")
-    echo "Run $i (23a): $time_23a ms"
+    echo "Run $i (23a): $time_23a ms" | tee -a $output_file
     total_time_23a=$((total_time_23a + time_23a))
 done
 
 # コマンド24の実行
-echo "Running command 24 ($repeats times)..."
+echo "Running command 24 ($repeats times)..." | tee -a $output_file
 for i in $(seq 1 $repeats); do
     time_24=$(measure_time "$cmd24")
-    echo "Run $i (24): $time_24 ms"
+    echo "Run $i (24): $time_24 ms" | tee -a $output_file
     total_time_24=$((total_time_24 + time_24))
 done
 
@@ -42,6 +49,6 @@ done
 average_time_23a=$((total_time_23a / repeats))
 average_time_24=$((total_time_24 / repeats))
 
-# 結果の表示
-echo "Average execution time for command 23a: $average_time_23a ms"
-echo "Average execution time for command 24: $average_time_24 ms"
+# 結果の表示とファイルへの書き込み
+echo "Average execution time for command 23a: $average_time_23a ms" | tee -a $output_file
+echo "Average execution time for command 24: $average_time_24 ms" | tee -a $output_file
