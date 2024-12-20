@@ -13,7 +13,7 @@ measure_time() {
 repeats=30
 
 # コマンド23a: fullprove
-cmd23a="snarkjs groth16 fullprove /home/y.okura/zkp/code/input1.json circuit2_js/circuit2.wasm circuit1_final.zkey proof.json public.json"
+cmd23a="snarkjs groth16 fullprove /home/y.okura/zkp/code/input1.json circuit2_js/circuit2.wasm circuit2_final.zkey proof.json public.json"
 
 # コマンド24: verify
 cmd24="snarkjs groth16 verify verification_key.json public.json proof.json"
