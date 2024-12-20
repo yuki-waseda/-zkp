@@ -136,6 +136,8 @@ template Main (out_dim, in_dim, S_clip, sigma) {
   }
 }
 
+
+
 component main {public [ challenge,pk ] } = Main(2,3,8000000,10000);
 
 
