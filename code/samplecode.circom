@@ -1,18 +1,59 @@
 pragma circom 2.1.6;
 
+
+
+
 // include "https://github.com/0xPARC/circom-secp256k1/blob/master/circuits/bigint.circom";
 
+
+
+
 //eps = 1
+
+
+
+
+//完成済み
+
+
+
 
   // 乱数列の数 = 28
   // 必要な乱数列の長さ 486
   // 28 * 486 = 13608ビット
   // ハッシュ列の長さ 254
   // ハッシュへのアクセス回数 54回
-include "/home/y.okura/zkp/circomlib/circuits/eddsaposeidon.circom";
-include "/home/y.okura/zkp/circomlib/circuits/poseidon.circom";
-include "/home/y.okura/zkp/circomlib/circuits/bitify.circom";
-include "/home/y.okura/zkp/circomlib/circuits/absoluter.circom";
+
+
+
+
+include "circomlib/poseidon.circom";      // ポセイドンハッシュ
+include "circomlib/bitify.circom";        // ビット変換
+include "circomlib/eddsaposeidon.circom"; // 署名の検証
+
+
+
+
+template Num2abs() {
+  signal input in;       // 入力値（正または負）
+  signal output out;     // 絶対値
+   // 符号判定（負の場合に1を返す）
+  component isNegative = LessThan(252);
+  isNegative.in[0] <== in;
+  isNegative.in[1] <== 0;
+   // 中間信号を定義
+  signal negIn;
+  signal posIn;
+  signal selectedNeg;
+  signal selectedPos;
+   negIn <== -in;             // 反転した値
+  posIn <== in;              // 正の値
+  selectedNeg <== isNegative.out * negIn; // 負の場合の計算
+  selectedPos <== (1 - isNegative.out) * posIn; // 正の場合の計算
+   // 絶対値を計算
+  out <== selectedNeg + selectedPos;
+}
+
 
 
 
@@ -95,4 +136,23 @@ template Main (out_dim, in_dim, S_clip, sigma) {
   }
 }
 
-component main {public [ challenge,pk ] } = Main(4,7,8000000000,10000);
+component main {public [ challenge,pk ] } = Main(2,3,8000000,10000);
+
+
+
+/* INPUT = {
+  "W_delta":[
+      [10000, -10000, 10000],
+      [10000, 10000, 10000]
+  ],
+  "challenge":"77709350291488122190439405240929087353217064205896907018783839224649743200000",
+  "R8":[
+      "16774387237116105358351138691924953050016913368559223093104495652194631946657",
+      "4236017229338829513500649111148409967689382747836787517597021937816281861176"
+      ],
+  "S":"402445995503813372065504427382289167600771739054294986315426548248231362557",
+  "pk":[
+      "11437843048345844185793707486483516383500921838036729863808043804720622959984",
+      "11024656439251449463892509008176740830119252482644847515994325191124994607993"
+  ]
+} */
