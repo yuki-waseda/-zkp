@@ -16,7 +16,7 @@ repeats=30
 output_file="execution1_times.log"
 
 # コマンド23a: fullprove
-cmd23a="snarkjs groth16 fullprove /home/y.okura/zkp/code/input1.json circuit1_js/circuit5.wasm circuit1_final.zkey proof.json public.json"
+cmd23a="snarkjs groth16 fullprove /home/y.okura/zkp/code/input1.json circuit1_js/circuit1.wasm circuit1_final.zkey proof.json public.json"
 
 # コマンド24: verify
 cmd24="snarkjs groth16 verify verification_key.json public.json proof.json"
