@@ -39,4 +39,4 @@ template Example () {
 
 }
 
-component main { } = Example();
+component main  = Example();
