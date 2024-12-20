@@ -7,7 +7,7 @@ include "/home/y.okura/zkp/circomlib/circuits/bitify.circom";        // ビッ�
 template Example () {
  
 
-    var num =10000;
+    var num =100;
     component hash[num][2];
     component bitify[num][2];
     var randSeq[num][254*2];
