@@ -67,29 +67,8 @@ template Main (out_dim, in_dim,  sigma) {
       }
   }
 
-  // ビット列による正規分布の近似
-  var binomial_mean = 254;
-  signal binomial_sum[out_dim][in_dim][hash_length * hash_repeats]; 
-  signal centered_binomial_sum[out_dim][in_dim];
-   for(var i =0; i < out_dim; i++){
-     for(var j = 0; j < in_dim; j++){
-        for(var k = 0; k < hash_length * hash_repeats; k++){
-            binomial_sum[i][j][k] <== (k == 0) ? randSeq[i][j][k] : binomial_sum[i][j][k-1] + randSeq[i][j][k];
-        }
-        centered_binomial_sum[i][j] <== binomial_sum[i][j][hash_length * hash_repeats-1] - binomial_mean;
-     }
-  }
-
-  // 更新パラメータにノイズを付与
-  var binomial_scale = 11269427669584644;
-  signal noise[out_dim][in_dim];
-  signal output W_noised[out_dim][in_dim];
-  for(var i =0; i < out_dim; i++){
-     for(var j = 0; j < in_dim; j++){
-         noise[i][j] <== centered_binomial_sum[i][j] * S_clip * sigma;
-         W_noised[i][j] <== W_delta[i][j]* binomial_scale + noise[i][j];
-     }
-  }
+ 
+  
 }
 
 component main {public [ challenge,pk,S_clip ] } = Main(4,7,10000);
