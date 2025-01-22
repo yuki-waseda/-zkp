@@ -81,7 +81,7 @@ template Main (out_dim, in_dim,  sigma) {
   }
 
   // 更新パラメータにノイズを付与
-  var binomial_scale = 11.269427669584644;
+  var binomial_scale = 11269427669584644;
   signal noise[out_dim][in_dim];
   signal output W_noised[out_dim][in_dim];
   for(var i =0; i < out_dim; i++){
