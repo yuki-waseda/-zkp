@@ -1,40 +1,17 @@
 pragma circom 2.1.6;
 
-// include "https://github.com/0xPARC/circom-secp256k1/blob/master/circuits/bigint.circom";
+include "./absoluter.circom";     // 絶対値の計算
+include "./eddsaposeidon.circom"; // 署名の検証
+include "./poseidon.circom";      // ポセイドンハッシュ
+include "./bitify.circom";        // ビット変換
 
-//eps = 1
-
-  // 乱数列の数 = 28
-  // 必要な乱数列の長さ 486
-  // 28 * 486 = 13608ビット
-  // ハッシュ列の長さ 254
-  // ハッシュへのアクセス回数 54回
-include "/home/y.okura/zkp/circomlib/circuits/eddsaposeidon.circom";
-include "/home/y.okura/zkp/circomlib/circuits/poseidon.circom";
-include "/home/y.okura/zkp/circomlib/circuits/bitify.circom";
-include "/home/y.okura/zkp/circomlib/circuits/absoluter.circom";
-
-
-
-template Main (out_dim, in_dim, S_clip, sigma) {
-  signal input W_delta[out_dim][in_dim]; // 元の更新パラメータの値
+template Main (out_dim, in_dim,  sigma) {
+  signal input W_delta[out_dim][in_dim]; // 更新パラメータの元の値
+  signal input S_clip;                   // クリッピング閾値
   signal input challenge;                // チャレンジの値
   signal input R8[2];                    // 署名の楕円曲線上の点
   signal input S;                        // 署名の値
   signal input pk[2];                    // 公開鍵
-
-
-  // 更新パラメータのクリッピングを検証
-  signal W_norm[out_dim * in_dim];
-  component abs[out_dim][in_dim];
-  for(var i = 0; i < out_dim; i++){
-    for(var j = 0; j < in_dim; j++){
-        abs[i][j] = Num2abs();
-        abs[i][j].in <== W_delta[i][j];
-        W_norm[i * in_dim + j] <== (i == 0 && j == 0) ?  abs[i][j].out : W_norm[i * in_dim + j -1] + abs[i][j].out;
-    }
-  }
-  assert(W_norm[out_dim * in_dim - 1] < S_clip);
 
   // チャレンジへの署名を公開鍵で検証
   component eddsaVerifier = EdDSAPoseidonVerifier();
@@ -55,7 +32,7 @@ template Main (out_dim, in_dim, S_clip, sigma) {
   for(var i = 0; i < out_dim; i++){
       for(var j = 0; j < in_dim; j++){
           for(var k = 0; k < hash_repeats; k++){
-              hash[i][j][k]=Poseidon(5);
+              hash[i][j][k] = Poseidon(5);
               hash[i][j][k].inputs[0] <== R8[0];
               hash[i][j][k].inputs[1] <== R8[1];
               hash[i][j][k].inputs[2] <== S;
@@ -71,28 +48,50 @@ template Main (out_dim, in_dim, S_clip, sigma) {
   }
 
   // ビット列による正規分布の近似
-  var binomial_mean = 254;
+  var binomial_mean = 254; // 508 * 0.5
   signal binomial_sum[out_dim][in_dim][hash_length * hash_repeats]; 
   signal centered_binomial_sum[out_dim][in_dim];
    for(var i =0; i < out_dim; i++){
      for(var j = 0; j < in_dim; j++){
         for(var k = 0; k < hash_length * hash_repeats; k++){
-            binomial_sum[i][j][k] <== (k == 0) ? randSeq[i][j][k] : binomial_sum[i][j][k-1] + randSeq[i][j][k];
+            binomial_sum[i][j][k] <== 
+                (k == 0) ? randSeq[i][j][k] 
+                         : binomial_sum[i][j][k-1] + randSeq[i][j][k];
         }
-        centered_binomial_sum[i][j] <== binomial_sum[i][j][hash_length * hash_repeats-1] - binomial_mean;
+        centered_binomial_sum[i][j] <== 
+            binomial_sum[i][j][hash_length * hash_repeats-1] - binomial_mean;
      }
   }
+  
+  // 更新パラメータをクリッピング
+  signal W_norm[out_dim * in_dim];
+  signal W_scale;
+  signal noise_scale;
+  component abs[out_dim][in_dim];
+  for(var i = 0; i < out_dim; i++){
+    for(var j = 0; j < in_dim; j++){
+        abs[i][j] = Num2abs();
+        abs[i][j].in <== W_delta[i][j];
+        W_norm[i * in_dim + j] <== 
+            (i == 0 && j == 0) ? abs[i][j].out
+                               : W_norm[i * in_dim + j - 1] + abs[i][j].out;
+    }
+  }
+  W_scale <==
+  (S_clip < W_norm[out_dim * in_dim - 1]) ? S_clip : 1;
+  noise_scale <==
+  (S_clip < W_norm[out_dim * in_dim - 1]) ? W_norm[out_dim * in_dim - 1] : 1;
 
   // 更新パラメータにノイズを付与
-  var binomial_scale = 11.269427669584644;
+  var binomial_deviation = 1126942766; // sqrt(508 * 0.5 * 0.5) * 10 ^ 8
   signal noise[out_dim][in_dim];
   signal output W_noised[out_dim][in_dim];
-  for(var i =0; i < out_dim; i++){
+  for(var i = 0; i < out_dim; i++){
      for(var j = 0; j < in_dim; j++){
-         noise[i][j] <== centered_binomial_sum[i][j] * S_clip * sigma;
-         W_noised[i][j] <== W_delta[i][j]* binomial_scale + noise[i][j];
+         noise[i][j] <== centered_binomial_sum[i][j] * S_clip * sigma * noise_scale;
+         W_noised[i][j] <== W_delta[i][j] * binomial_deviation * W_scale + noise[i][j];
      }
   }
 }
 
-component main {public [ challenge,pk ] } = Main(4,7,0.22645693,10000);
+component main {public [challenge,pk]} = Main(4, 7, 2264569300000000, 489647953);

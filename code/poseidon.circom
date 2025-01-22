@@ -12,7 +12,6 @@ pragma circom 2.1.6;
 include "/home/y.okura/zkp/circomlib/circuits/eddsaposeidon.circom";
 include "/home/y.okura/zkp/circomlib/circuits/poseidon.circom";
 include "/home/y.okura/zkp/circomlib/circuits/bitify.circom";
-include "/home/y.okura/zkp/circomlib/circuits/absoluter.circom";
 
 
 
@@ -26,15 +25,12 @@ template Main (out_dim, in_dim, S_clip, sigma) {
 
   // 更新パラメータのクリッピングを検証
   signal W_norm[out_dim * in_dim];
-  component abs[out_dim][in_dim];
   for(var i = 0; i < out_dim; i++){
     for(var j = 0; j < in_dim; j++){
-        abs[i][j] = Num2abs();
-        abs[i][j].in <== W_delta[i][j];
-        W_norm[i * in_dim + j] <== (i == 0 && j == 0) ?  abs[i][j].out : W_norm[i * in_dim + j -1] + abs[i][j].out;
+        W_norm[i * in_dim + j] <== (i == 0 && j == 0) ?  W_delta[i][j]**2 : W_norm[i * in_dim + j -1] + W_delta[i][j]**2;
     }
   }
-  assert(W_norm[out_dim * in_dim - 1] < S_clip);
+  assert(W_norm[out_dim * in_dim - 1] < S_clip**2);
 
   // チャレンジへの署名を公開鍵で検証
   component eddsaVerifier = EdDSAPoseidonVerifier();
