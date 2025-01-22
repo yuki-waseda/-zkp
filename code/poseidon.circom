@@ -15,12 +15,13 @@ include "/home/y.okura/zkp/circomlib/circuits/bitify.circom";
 
 
 
-template Main (out_dim, in_dim, S_clip, sigma) {
+template Main (out_dim, in_dim,  sigma) {
   signal input W_delta[out_dim][in_dim]; // 元の更新パラメータの値
   signal input challenge;                // チャレンジの値
   signal input R8[2];                    // 署名の楕円曲線上の点
   signal input S;                        // 署名の値
   signal input pk[2];                    // 公開鍵
+  signal input S_clip;  
 
 
   // 更新パラメータのクリッピングを検証
@@ -91,4 +92,4 @@ template Main (out_dim, in_dim, S_clip, sigma) {
   }
 }
 
-component main {public [ challenge,pk ] } = Main(4,7,0.22645693,10000);
+component main {public [ challenge,pk,S_clip ] } = Main(4,7,10000);
