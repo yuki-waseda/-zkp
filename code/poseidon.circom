@@ -23,26 +23,6 @@ template Main (out_dim, in_dim,  sigma) {
   signal input pk[2];                    // 公開鍵
   signal input S_clip;  
 
-
-  // 更新パラメータのクリッピングを検証
-  signal W_norm[out_dim * in_dim];
-  for(var i = 0; i < out_dim; i++){
-    for(var j = 0; j < in_dim; j++){
-        W_norm[i * in_dim + j] <== (i == 0 && j == 0) ?  W_delta[i][j]**2 : W_norm[i * in_dim + j -1] + W_delta[i][j]**2;
-    }
-  }
-  assert(W_norm[out_dim * in_dim - 1] < S_clip**2);
-
-  // チャレンジへの署名を公開鍵で検証
-  component eddsaVerifier = EdDSAPoseidonVerifier();
-      eddsaVerifier.Ax <== pk[0];
-      eddsaVerifier.Ay <== pk[1];
-      eddsaVerifier.S <== S;
-      eddsaVerifier.R8x <== R8[0];
-      eddsaVerifier.R8y <== R8[1];
-      eddsaVerifier.M <== challenge;
-      eddsaVerifier.enabled <== 1;
-
   // 署名をハッシュ化し、ビット列に変換
   var hash_repeats = 2;
   var hash_length = 254;
